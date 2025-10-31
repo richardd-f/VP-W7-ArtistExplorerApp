@@ -1,0 +1,67 @@
+package com.felix.labw7_artistexplorerapp.data.model
+
+import com.google.gson.annotations.SerializedName
+
+data class SingerApiResponse(
+    @SerializedName("artists") val artists: List<Artist>?
+)
+
+/**
+ * This class represents a single artist's data.
+ * It maps all the fields inside the "artists" array object.
+ *
+ * Note: Most fields are nullable (String?) because the API
+ * frequently sends 'null' for unknown values.
+ */
+data class Artist(
+    @SerializedName("idArtist") val artistId: String,
+    @SerializedName("strArtist") val artistName: String,
+    @SerializedName("strArtistStripped") val artistStripped: String?,
+    @SerializedName("strArtistAlternate") val artistAlternate: String?,
+    @SerializedName("strLabel") val label: String?,
+    @SerializedName("idLabel") val labelId: String?,
+    @SerializedName("intFormedYear") val formedYear: String?,
+    @SerializedName("intBornYear") val bornYear: String?,
+    @SerializedName("intDiedYear") val diedYear: String?,
+    @SerializedName("strDisbanded") val disbanded: String?,
+    @SerializedName("strStyle") val style: String?,
+    @SerializedName("strGenre") val genre: String?,
+    @SerializedName("strMood") val mood: String?,
+    @SerializedName("strWebsite") val website: String?,
+    @SerializedName("strFacebook") val facebook: String?,
+    @SerializedName("strTwitter") val twitter: String?,
+    @SerializedName("strBiographyEN") val biographyEN: String?,
+    @SerializedName("strBiographyDE") val biographyDE: String?,
+    @SerializedName("strBiographyFR") val biographyFR: String?,
+    @SerializedName("strBiographyCN") val biographyCN: String?,
+    @SerializedName("strBiographyIT") val biographyIT: String?,
+    @SerializedName("strBiographyJP") val biographyJP: String?,
+    @SerializedName("strBiographyRU") val biographyRU: String?,
+    @SerializedName("strBiographyES") val biographyES: String?,
+    @SerializedName("strBiographyPT") val biographyPT: String?,
+    @SerializedName("strBiographySE") val biographySE: String?,
+    @SerializedName("strBiographyNL") val biographyNL: String?,
+    @SerializedName("strBiographyHU") val biographyHU: String?,
+    @SerializedName("strBiographyNO") val biographyNO: String?,
+    @SerializedName("strBiographyIL") val biographyIL: String?,
+    @SerializedName("strBiographyPL") val biographyPL: String?,
+    @SerializedName("strGender") val gender: String?,
+    @SerializedName("intMembers") val memberCount: String?,
+    @SerializedName("strCountry") val country: String?,
+    @SerializedName("strCountryCode") val countryCode: String?,
+    @SerializedName("strArtistThumb") val artistThumbUrl: String?,
+    @SerializedName("strArtistLogo") val artistLogoUrl: String?,
+    @SerializedName("strArtistCutout") val artistCutoutUrl: String?,
+    @SerializedName("strArtistClearart") val artistClearartUrl: String?,
+    @SerializedName("strArtistWideThumb") val artistWideThumbUrl: String?,
+    @SerializedName("strArtistFanart") val artistFanartUrl: String?,
+    @SerializedName("strArtistFanart2") val artistFanart2Url: String?,
+    @SerializedName("strArtistFanart3") val artistFanart3Url: String?,
+    @SerializedName("strArtistFanart4") val artistFanart4Url: String?,
+    @SerializedName("strArtistBanner") val artistBannerUrl: String?,
+    @SerializedName("strMusicBrainzID") val musicBrainzId: String?,
+    @SerializedName("strISNIcode") val isniCode: String?,
+    @SerializedName("strLastFMChart") val lastFmChart: String?,
+    @SerializedName("intCharted") val charted: String?,
+    @SerializedName("strLocked") val locked: String?
+)
