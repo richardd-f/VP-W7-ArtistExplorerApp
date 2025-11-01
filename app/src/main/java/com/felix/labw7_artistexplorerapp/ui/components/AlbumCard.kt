@@ -26,7 +26,8 @@ import com.felix.labw7_artistexplorerapp.data.model.AlbumLocal
 @Composable
 fun AlbumCard(
     modifier: Modifier = Modifier,
-    album: AlbumLocal
+    album: AlbumLocal,
+    onCardClick: (albumId:Int) -> Unit
 ) {
     OutlinedCard(
         modifier = modifier,
@@ -34,7 +35,8 @@ fun AlbumCard(
         border = BorderStroke(1.dp, Color(0x4FA29C95)),
         colors = CardDefaults.outlinedCardColors(
             containerColor = Color(0xFF191E1E)
-        )
+        ),
+        onClick = {onCardClick(album.id)}
     ) {
         Column{
             // Album Image

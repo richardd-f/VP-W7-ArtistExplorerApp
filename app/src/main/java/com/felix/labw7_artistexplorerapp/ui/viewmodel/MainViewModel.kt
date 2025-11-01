@@ -7,12 +7,14 @@ import com.felix.labw7_artistexplorerapp.data.model.TrackModel
 import com.felix.labw7_artistexplorerapp.data.model.results.Result
 import com.felix.labw7_artistexplorerapp.data.repository.AlbumRepository
 import com.felix.labw7_artistexplorerapp.ui.screens.albumDetails.AlbumDetailsUiState
+import com.felix.labw7_artistexplorerapp.ui.screens.homepage.HomepageUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
+import java.lang.Thread.State
 import javax.inject.Inject
 
 @HiltViewModel
@@ -47,11 +49,14 @@ class MainViewModel @Inject constructor(
     )
     val albumList : StateFlow<List<AlbumLocal>> = _albumsList.asStateFlow()
 
+    private val _homepageUiState = MutableStateFlow<HomepageUiState>(HomepageUiState.Loading)
     private val _selectedAlbum = MutableStateFlow<AlbumLocal?>(null)
-    val selectedAlbum = _selectedAlbum.asStateFlow()
-
     private val _albumDetailsUiState = MutableStateFlow(AlbumDetailsUiState())
+
+    val homepageUiState = _homepageUiState.asStateFlow()
+    val selectedAlbum = _selectedAlbum.asStateFlow()
     val albumDetailsUiState: StateFlow<AlbumDetailsUiState> = _albumDetailsUiState.asStateFlow()
+
 
     init {
         fetchAlbums()
@@ -80,15 +85,18 @@ class MainViewModel @Inject constructor(
                             }
 
                             _albumsList.value = localList
+                            _homepageUiState.value = HomepageUiState.Success
                         }
 
                         is Result.Error -> {
                             println("Error fetching albums: ${result.message}")
                             _albumsList.value = emptyList()
+                            _homepageUiState.value = HomepageUiState.Error(result.message ?: "Unknown error")
                         }
 
                         is Result.Loading -> {
                             println("Loading albums...")
+                            _homepageUiState.value = HomepageUiState.Loading
                         }
                     }
                 }

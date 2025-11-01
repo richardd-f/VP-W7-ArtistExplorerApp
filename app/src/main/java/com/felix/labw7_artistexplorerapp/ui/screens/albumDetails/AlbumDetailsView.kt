@@ -11,9 +11,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -36,8 +39,10 @@ import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import com.felix.labw7_artistexplorerapp.R
 import com.felix.labw7_artistexplorerapp.data.model.AlbumLocal
+import com.felix.labw7_artistexplorerapp.data.model.TrackModel
 import com.felix.labw7_artistexplorerapp.navigation.Screen
 import com.felix.labw7_artistexplorerapp.ui.components.AlbumCard
+import com.felix.labw7_artistexplorerapp.ui.components.TrackItem
 import com.felix.labw7_artistexplorerapp.ui.viewmodel.MainViewModel
 
 @Composable
@@ -54,7 +59,7 @@ fun AlbumDetails(
 @Composable
 fun AlbumDetailsContent(
     navController: NavController,
-    album: AlbumLocal
+    album: AlbumLocal,
 ){
     Column(
         modifier = Modifier
@@ -78,6 +83,7 @@ fun AlbumDetailsContent(
         }
         
         Spacer(Modifier.height(20.dp))
+        // Image Thumbnail
         Card(
             modifier = Modifier
                 .fillMaxWidth()
@@ -134,6 +140,28 @@ fun AlbumDetailsContent(
                 }
             }
         }
+
+        //
+        // "Tracks" Title
+        Text(
+            text = "Tracks",
+            color = Color(0xFFD4AF37), // A gold-like color from your image
+            fontSize = 22.sp,
+            fontWeight = FontWeight.Bold
+        )
+
+        Spacer(Modifier.height(16.dp))
+
+        // LazyColumn for the track list
+        LazyColumn (
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 20.dp)
+        ) {
+            itemsIndexed(album.allTracks) { index, track ->
+                TrackItem(track = track, number = index+1)
+            }
+        }
     }
 }
 
@@ -149,7 +177,16 @@ fun AlbumDetailsPreview(){
             genre = "Pop Rock",
             description = "halo ini adlaha deskripsi, halo ini adlaha deskripsi, halo ini adlaha deskripsi, halo ini adlaha deskripsihalo ini adlaha deskripsi, halo ini adlaha deskripsi",
             imageUrl = "https://r2.theaudiodb.com/images/media/album/thumb/0qkd2g1639403124.jpg",
-            allTracks = listOf(),
+            allTracks = listOf(
+                TrackModel(1, "Last Train Home", "3:07"),
+                TrackModel(1, "Last Train Home", "3:07"),
+                TrackModel(1, "Last Train Home", "3:07"),
+                TrackModel(1, "Last Train Home", "3:07"),
+                TrackModel(1, "Last Train Home", "3:07"),
+                TrackModel(1, "Last Train Home", "3:07"),
+                TrackModel(1, "Last Train Home", "3:07"),
+
+            ),
             artistName = "John Denver"
         )
     )

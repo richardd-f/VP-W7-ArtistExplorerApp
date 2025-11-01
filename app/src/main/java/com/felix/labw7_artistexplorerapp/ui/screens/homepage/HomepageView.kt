@@ -27,6 +27,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -49,14 +50,21 @@ fun Homepage(
 ){
     HomepageContent(
         navController,
-        albumsList = viewModel.albumList.collectAsState().value
+        albumsList = viewModel.albumList.collectAsState().value,
+        homepageUiState = viewModel.homepageUiState.collectAsState().value,
+        onCardClick = {
+            viewModel.setAlbum(it)
+            navController.navigate(Screen.AlbumDetails.route)
+        }
     )
 }
 
 @Composable
 fun HomepageContent(
     navController: NavController,
-    albumsList: List<AlbumLocal>
+    albumsList: List<AlbumLocal>,
+    homepageUiState: HomepageUiState,
+    onCardClick: (albumId:Int) -> Unit
 ){
     Column(
         modifier = Modifier
@@ -129,22 +137,55 @@ fun HomepageContent(
         Spacer(Modifier.height(16.dp))
 
         // --- Lazy Grid for Albums ---
-        LazyVerticalGrid(
-            columns = GridCells.Fixed(2),
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(400.dp)
-                .padding(horizontal = 20.dp),
-            horizontalArrangement = Arrangement.spacedBy(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp),
-
-        ) {
-            items(albumsList) { album ->
-                AlbumCard(
-                    album = album
+        if(homepageUiState is HomepageUiState.Loading){
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ){
+                Text(
+                    text = "Loading...",
+                    color = Color(0xFFA29C95)
                 )
             }
         }
+        else if (homepageUiState is HomepageUiState.Error){
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ){
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(
+                        text = "An error is occured",
+                        color = Color(0xFFA29C95),
+                        textAlign = TextAlign.Center
+                    )
+                    Text(
+                        text = homepageUiState.errorMsg,
+                        color = Color(0xFFA29C95),
+                        textAlign = TextAlign.Center
+                    )
+                }
+            }
+        }
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(2),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(400.dp)
+                    .padding(horizontal = 20.dp),
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+
+            ) {
+                items(albumsList) { album ->
+                    AlbumCard(
+                        album = album,
+                        onCardClick = onCardClick
+                    )
+                }
+            }
     }
 }
 
@@ -236,6 +277,8 @@ fun HomepagePreview(){
                 ),
                 artistName = "John Mayer"
             )
-        )
+        ),
+        homepageUiState = HomepageUiState.Success,
+        onCardClick = {}
     )
 }
