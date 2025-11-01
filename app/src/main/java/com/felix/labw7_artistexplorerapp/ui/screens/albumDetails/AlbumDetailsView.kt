@@ -181,15 +181,15 @@ fun AlbumDetailsContent(
             Spacer(Modifier.height(16.dp))
 
             // LazyColumn for the track list
-//        LazyColumn (
-//            modifier = Modifier
-//                .fillMaxWidth()
-//                .padding(horizontal = 20.dp)
-//        ) {
-//            itemsIndexed(album.allTracks) { index, track ->
-//                TrackItem(track = track, number = index+1)
-//            }
-//        }
+        LazyColumn (
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 20.dp)
+        ) {
+            itemsIndexed(album.allTracks) { index, track ->
+                TrackItem(track = track, number = index+1)
+            }
+        }
         } else {
             Box(
                 modifier = Modifier.fillMaxSize(),
