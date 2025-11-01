@@ -5,7 +5,8 @@ data class AlbumLocal(
     val title: String,
     val year: Int,
     val genre: String,
+    val artistName: String,
     val description: String,
-    val painterId: Int,
+    val imageUrl: String,
     val allTracks: List<TrackModel>
 )

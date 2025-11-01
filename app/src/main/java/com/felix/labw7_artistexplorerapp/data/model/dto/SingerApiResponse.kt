@@ -1,4 +1,4 @@
-package com.felix.labw7_artistexplorerapp.data.model
+package com.felix.labw7_artistexplorerapp.data.model.dto
 
 import com.google.gson.annotations.SerializedName
 
@@ -6,13 +6,6 @@ data class SingerApiResponse(
     @SerializedName("artists") val artists: List<Artist>?
 )
 
-/**
- * This class represents a single artist's data.
- * It maps all the fields inside the "artists" array object.
- *
- * Note: Most fields are nullable (String?) because the API
- * frequently sends 'null' for unknown values.
- */
 data class Artist(
     @SerializedName("idArtist") val artistId: String,
     @SerializedName("strArtist") val artistName: String,

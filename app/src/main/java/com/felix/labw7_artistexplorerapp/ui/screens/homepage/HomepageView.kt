@@ -36,6 +36,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.felix.labw7_artistexplorerapp.R
 import com.felix.labw7_artistexplorerapp.data.model.AlbumLocal
+import com.felix.labw7_artistexplorerapp.data.model.TrackModel
 import com.felix.labw7_artistexplorerapp.navigation.Screen
 import com.felix.labw7_artistexplorerapp.ui.components.AlbumCard
 import com.felix.labw7_artistexplorerapp.ui.viewmodel.MainViewModel
@@ -139,9 +140,7 @@ fun HomepageContent(
         ) {
             items(albumsList) { album ->
                 AlbumCard(
-                    painterId = album.painterId,
-                    title = album.title,
-                    subtitle = album.subtitle
+                    album = album
                 )
             }
         }
@@ -154,12 +153,88 @@ fun HomepagePreview(){
     HomepageContent(
         navController = rememberNavController(),
         albumsList = listOf(
-            AlbumLocal(1, "Sob Rock", "2021 • Indie", R.drawable.john_denver),
-            AlbumLocal(2, "New Light", "2018 • Indie", R.drawable.john_denver),
-            AlbumLocal(3, "Paradise Valley", "2013 • Folk", R.drawable.john_denver),
-            AlbumLocal(4, "Born and Raised", "2012 • Folk Rock", R.drawable.john_denver),
-            AlbumLocal(5, "Continuum", "2006 • Pop Rock", R.drawable.john_denver),
-            AlbumLocal(6, "Heavier Things", "2003 • Pop Rock", R.drawable.john_denver)
+            AlbumLocal(
+                id = 1,
+                title = "Sob Rocks",
+                year = 2021,
+                genre = "Pop Rock",
+                description = "John Mayer’s nostalgic 80s-inspired album featuring tracks like 'Last Train Home'.",
+                imageUrl = "https://r2.theaudiodb.com/images/media/album/thumb/0qkd2g1639403124.jpg",
+                allTracks = listOf(
+                    TrackModel(1, "Last Train Home", "3:07"),
+                    TrackModel(2, "Shouldn't Matter but It Does", "3:56"),
+                    TrackModel(3, "Wild Blue", "4:12")
+                ),
+                artistName = "John Mayer"
+            ),
+            AlbumLocal(
+                id = 2,
+                title = "New Light",
+                year = 2018,
+                genre = "Indie Pop",
+                description = "A groovy single blending pop and funk, showing Mayer’s lighter side.",
+                imageUrl = "https://r2.theaudiodb.com/images/media/album/thumb/qyyvtr1626787588.jpg",
+                allTracks = listOf(
+                    TrackModel(1, "New Light", "3:39")
+                ),
+                artistName = "John Mayer"
+            ),
+            AlbumLocal(
+                id = 3,
+                title = "Paradise Valley",
+                year = 2013,
+                genre = "Folk",
+                description = "A reflective album with blues and folk elements, featuring ‘Paper Doll’.",
+                imageUrl = "https://r2.theaudiodb.com/images/media/album/thumb/rryrrq1358986965.jpg",
+                allTracks = listOf(
+                    TrackModel(1, "Wildfire", "4:11"),
+                    TrackModel(2, "Paper Doll", "4:20"),
+                    TrackModel(3, "Who You Love", "4:09")
+                ),
+                artistName = "John Mayer"
+            ),
+            AlbumLocal(
+                id = 4,
+                title = "Born and Raised",
+                year = 2012,
+                genre = "Folk Rock",
+                description = "A warm, Americana-inspired album reflecting self-discovery and growth.",
+                imageUrl = "https://r2.theaudiodb.com/images/media/album/thumb/rtuyqt1358986939.jpg",
+                allTracks = listOf(
+                    TrackModel(1, "Queen of California", "4:10"),
+                    TrackModel(2, "The Age of Worry", "2:38"),
+                    TrackModel(3, "Born and Raised", "4:49")
+                ),
+                artistName = "John Mayer"
+            ),
+            AlbumLocal(
+                id = 5,
+                title = "Continuum",
+                year = 2006,
+                genre = "Pop Rock",
+                description = "A soulful album blending blues and pop, featuring hits like ‘Gravity’.",
+                imageUrl = "https://r2.theaudiodb.com/images/media/album/thumb/vtwwrs1347970831.jpg",
+                allTracks = listOf(
+                    TrackModel(1, "Waiting on the World to Change", "3:50"),
+                    TrackModel(2, "Belief", "4:02"),
+                    TrackModel(3, "Gravity", "4:05")
+                ),
+                artistName = "John Mayer"
+            ),
+            AlbumLocal(
+                id = 6,
+                title = "Heavier Things",
+                year = 2003,
+                genre = "Pop Rock",
+                description = "A more mature and introspective follow-up to Mayer’s early pop sound.",
+                imageUrl = "https://r2.theaudiodb.com/images/media/album/thumb/qyyrrt1347970718.jpg",
+                allTracks = listOf(
+                    TrackModel(1, "Clarity", "4:28"),
+                    TrackModel(2, "Bigger Than My Body", "4:26"),
+                    TrackModel(3, "Daughters", "3:58")
+                ),
+                artistName = "John Mayer"
+            )
         )
     )
 }

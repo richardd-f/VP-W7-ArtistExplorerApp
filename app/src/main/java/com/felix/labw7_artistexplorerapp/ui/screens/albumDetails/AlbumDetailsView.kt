@@ -20,6 +20,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -34,6 +35,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import com.felix.labw7_artistexplorerapp.R
+import com.felix.labw7_artistexplorerapp.data.model.AlbumLocal
 import com.felix.labw7_artistexplorerapp.navigation.Screen
 import com.felix.labw7_artistexplorerapp.ui.components.AlbumCard
 import com.felix.labw7_artistexplorerapp.ui.viewmodel.MainViewModel
@@ -44,13 +46,15 @@ fun AlbumDetails(
     viewModel: MainViewModel = viewModel()
 ){
     AlbumDetailsContent(
-        navController
+        navController,
+        album = viewModel.selectedAlbum.collectAsState().value!!
     )
 }
 
 @Composable
 fun AlbumDetailsContent(
-    navController: NavController
+    navController: NavController,
+    album: AlbumLocal
 ){
     Column(
         modifier = Modifier
@@ -67,23 +71,22 @@ fun AlbumDetailsContent(
         ){
             Text(
                 modifier = Modifier.padding(bottom = 20.dp),
-                text = "John Mayer",
+                text = album.artistName,
                 color = Color(0xFFA29C95),
                 fontSize = 20.sp
             )
         }
-
-        // John Denver Image
+        
         Spacer(Modifier.height(20.dp))
         Card(
             modifier = Modifier
-                .fillMaxWidth() // Makes the card fill the width
-                .padding(16.dp), // Padding around the whole card
-            shape = RoundedCornerShape(12.dp), // More rounded corners
+                .fillMaxWidth()
+                .padding(16.dp),
+            shape = RoundedCornerShape(12.dp),
             colors = CardDefaults.cardColors(
-                containerColor = Color(0xFF1B1B1B) // Darker background for the card
+                containerColor = Color(0xFF1B1B1B)
             ),
-            elevation = CardDefaults.cardElevation(defaultElevation = 8.dp) // Subtle shadow
+            elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
         ) {
             Column {
                 // Top Section: Image with Overlays
@@ -92,62 +95,21 @@ fun AlbumDetailsContent(
                         .fillMaxWidth()
                         .height(300.dp) // Fixed height for the image section
                 ) {
-
-                    // !! IMPORTANT: Replace with your data
-                    val artistName = "John Mayer"
-                    val albumName = "Sob Rock"
-                    // This is the URL for the image
-                    val imageUrl =
-                        "https://r2.theaudiodb.com/images/media/album/thumb/0qkd2g1639403124.jpg"
-
                     // Main Album Image (from URL)
                     AsyncImage(
-                        model = imageUrl,
-                        contentDescription = "$albumName by $artistName",
+                        model = album.imageUrl,
+                        contentDescription = "${album.title} by ${album.artistName}",
                         modifier = Modifier.fillMaxWidth(),
-                        contentScale = ContentScale.Crop, // Crop to fill the bounds
-                        // Optional: You can add a placeholder
-                        // placeholder = painterResource(id = R.drawable.your_placeholder)
-                    )
-
-                    // Artist Name Overlay
-                    Text(
-                        text = artistName.uppercase(),
-                        color = Color.White.copy(alpha = 0.8f), // Slightly transparent white
-                        fontSize = 12.sp,
-                        fontWeight = FontWeight.SemiBold,
-                        modifier = Modifier
-                            .align(Alignment.TopStart) // Align to top-left
-                            .padding(start = 12.dp, top = 12.dp)
-                    )
-
-                    // Album Name Overlay
-                    Text(
-                        text = albumName.uppercase(),
-                        color = Color.White.copy(alpha = 0.8f), // Slightly transparent white
-                        fontSize = 12.sp,
-                        fontWeight = FontWeight.SemiBold,
-                        modifier = Modifier
-                            .align(Alignment.TopEnd) // Align to top-right
-                            .padding(end = 12.dp, top = 12.dp)
+                        contentScale = ContentScale.Crop,
                     )
                 }
-
-                // Bottom Section: Album Details
-                // !! Replace these with your data
-                val yearReleased = "2021"
-                val genre = "Indie"
-                val description =
-                    "Sob Rock is the eighth studio album by American singer-songwriter John Mayer, " +
-                            "released on July 16, 2021, by Columbia Records. The single \"New Light\", " +
-                            "released in May 2018, is included on the album..."
 
                 Column(
                     modifier = Modifier.padding(16.dp) // Padding for the text content
                 ) {
                     // Album Title
                     Text(
-                        text = albumName,
+                        text = album.title,
                         color = Color.White,
                         fontSize = 24.sp,
                         fontWeight = FontWeight.Bold
@@ -156,7 +118,7 @@ fun AlbumDetailsContent(
 
                     // Year and Genre
                     Text(
-                        text = "$yearReleased • $genre",
+                        text = "${album.year} • ${album.genre}",
                         color = Color.Gray,
                         fontSize = 14.sp
                     )
@@ -164,10 +126,10 @@ fun AlbumDetailsContent(
 
                     // Description
                     Text(
-                        text = description,
+                        text = album.description,
                         color = Color.LightGray,
                         fontSize = 14.sp,
-                        lineHeight = 20.sp // Improve readability for paragraphs
+                        lineHeight = 20.sp
                     )
                 }
             }
@@ -180,6 +142,15 @@ fun AlbumDetailsContent(
 fun AlbumDetailsPreview(){
     AlbumDetailsContent(
         navController = rememberNavController(),
-
+        album = AlbumLocal(
+            id = 1,
+            title = "Sob Rock",
+            year = 2021,
+            genre = "Pop Rock",
+            description = "halo ini adlaha deskripsi, halo ini adlaha deskripsi, halo ini adlaha deskripsi, halo ini adlaha deskripsihalo ini adlaha deskripsi, halo ini adlaha deskripsi",
+            imageUrl = "https://r2.theaudiodb.com/images/media/album/thumb/0qkd2g1639403124.jpg",
+            allTracks = listOf(),
+            artistName = "John Denver"
+        )
     )
 }

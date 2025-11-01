@@ -18,6 +18,7 @@ fun AppNavigation() {
 
     NavHost(navController = navController, startDestination = Screen.Home.route) {
         composable(Screen.Home.route) { Homepage(navController) }
+
         composable(Screen.AlbumDetails.route) { AlbumDetails(navController) }
     }
 }
