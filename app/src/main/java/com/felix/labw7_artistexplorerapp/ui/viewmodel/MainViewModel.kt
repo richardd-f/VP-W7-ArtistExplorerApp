@@ -12,6 +12,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import java.lang.Thread.State
@@ -51,7 +52,7 @@ class MainViewModel @Inject constructor(
 
     private val _homepageUiState = MutableStateFlow<HomepageUiState>(HomepageUiState.Loading)
     private val _selectedAlbum = MutableStateFlow<AlbumLocal?>(null)
-    private val _albumDetailsUiState = MutableStateFlow(AlbumDetailsUiState())
+    private val _albumDetailsUiState = MutableStateFlow<AlbumDetailsUiState>(AlbumDetailsUiState.Loading)
 
     val homepageUiState = _homepageUiState.asStateFlow()
     val selectedAlbum = _selectedAlbum.asStateFlow()
@@ -112,21 +113,22 @@ class MainViewModel @Inject constructor(
 
         viewModelScope.launch {
             combine(albumDetailsFlow, albumTracksFlow) { albumResult, trackResult ->
+                albumResult to trackResult
+            }.collectLatest { (albumResult, trackResult) ->
 
                 when {
                     albumResult is Result.Loading || trackResult is Result.Loading -> {
-                        _albumDetailsUiState.value = AlbumDetailsUiState(isLoading = true)
-                        null
+                        _albumDetailsUiState.value = AlbumDetailsUiState.Loading
                     }
 
                     albumResult is Result.Error -> {
-                        _albumDetailsUiState.value = AlbumDetailsUiState(errorMessage = albumResult.message)
-                        null
+                        _albumDetailsUiState.value =
+                            AlbumDetailsUiState.Error(albumResult.message ?: "Unknown error")
                     }
 
                     trackResult is Result.Error -> {
-                        _albumDetailsUiState.value = AlbumDetailsUiState(errorMessage = trackResult.message)
-                        null
+                        _albumDetailsUiState.value =
+                            AlbumDetailsUiState.Error(trackResult.message ?: "Unknown error")
                     }
 
                     albumResult is Result.Success && trackResult is Result.Success -> {
@@ -152,17 +154,15 @@ class MainViewModel @Inject constructor(
                             allTracks = trackModels
                         )
 
-                        _albumDetailsUiState.value = AlbumDetailsUiState(album = albumLocal)
-                        albumLocal
+                        _selectedAlbum.value = albumLocal
+                        _albumDetailsUiState.value = AlbumDetailsUiState.Success
                     }
-
-                    else -> null
                 }
-            }.collect { albumLocal ->
-                if (albumLocal != null) _selectedAlbum.value = albumLocal
             }
         }
     }
+
+
 
 
 }

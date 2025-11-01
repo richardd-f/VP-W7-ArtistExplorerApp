@@ -33,6 +33,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
@@ -48,122 +49,158 @@ import com.felix.labw7_artistexplorerapp.ui.viewmodel.MainViewModel
 @Composable
 fun AlbumDetails(
     navController: NavController,
-    viewModel: MainViewModel = viewModel()
+    viewModel: MainViewModel = hiltViewModel()
 ){
     AlbumDetailsContent(
         navController,
-        album = viewModel.selectedAlbum.collectAsState().value!!
+        albumDetailsUiState = viewModel.albumDetailsUiState.collectAsState().value,
+        album = viewModel.selectedAlbum.collectAsState().value,
     )
 }
 
 @Composable
 fun AlbumDetailsContent(
     navController: NavController,
-    album: AlbumLocal,
-){
+    albumDetailsUiState: AlbumDetailsUiState,
+    album: AlbumLocal?,
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(color = Color(0xFF282828)),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(80.dp)
-                .background(Color(0xFF191E1E)),
-            contentAlignment = Alignment.BottomCenter
-        ){
-            Text(
-                modifier = Modifier.padding(bottom = 20.dp),
-                text = album.artistName,
-                color = Color(0xFFA29C95),
-                fontSize = 20.sp
-            )
-        }
-        
-        Spacer(Modifier.height(20.dp))
-        // Image Thumbnail
-        Card(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            shape = RoundedCornerShape(12.dp),
-            colors = CardDefaults.cardColors(
-                containerColor = Color(0xFF1B1B1B)
-            ),
-            elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
-        ) {
-            Column {
-                // Top Section: Image with Overlays
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(300.dp) // Fixed height for the image section
-                ) {
-                    // Main Album Image (from URL)
-                    AsyncImage(
-                        model = album.imageUrl,
-                        contentDescription = "${album.title} by ${album.artistName}",
-                        modifier = Modifier.fillMaxWidth(),
-                        contentScale = ContentScale.Crop,
-                    )
-                }
+        if (albumDetailsUiState is AlbumDetailsUiState.Loading) {
+            // if loading
+            Box(
+                Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = "Loading...",
+                    color = Color(0xFFA29C95)
+                )
+            }
+        } else if (albumDetailsUiState is AlbumDetailsUiState.Error) {
+            // if error
+            Box(
+                modifier = Modifier
+                    .fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = "An error is occured ${albumDetailsUiState.message}",
+                    color = Color(0xFFA29C95)
+                )
+            }
+        } else if (album != null) {
+            // else mean no error and not loading
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(80.dp)
+                    .background(Color(0xFF191E1E)),
+                contentAlignment = Alignment.BottomCenter
+            ) {
+                Text(
+                    modifier = Modifier.padding(bottom = 20.dp),
+                    text = album.artistName,
+                    color = Color(0xFFA29C95),
+                    fontSize = 20.sp
+                )
+            }
 
-                Column(
-                    modifier = Modifier.padding(16.dp) // Padding for the text content
-                ) {
-                    // Album Title
-                    Text(
-                        text = album.title,
-                        color = Color.White,
-                        fontSize = 24.sp,
-                        fontWeight = FontWeight.Bold
-                    )
-                    Spacer(Modifier.height(4.dp))
+            Spacer(Modifier.height(20.dp))
+            // Image Thumbnail
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                shape = RoundedCornerShape(12.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = Color(0xFF1B1B1B)
+                ),
+                elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
+            ) {
+                Column {
+                    // Top Section: Image with Overlays
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(300.dp) // Fixed height for the image section
+                    ) {
+                        // Main Album Image (from URL)
+                        AsyncImage(
+                            model = album.imageUrl,
+                            contentDescription = "${album.title} by ${album.artistName}",
+                            modifier = Modifier.fillMaxWidth(),
+                            contentScale = ContentScale.Crop,
+                        )
+                    }
 
-                    // Year and Genre
-                    Text(
-                        text = "${album.year} • ${album.genre}",
-                        color = Color.Gray,
-                        fontSize = 14.sp
-                    )
-                    Spacer(Modifier.height(12.dp))
+                    Column(
+                        modifier = Modifier.padding(16.dp) // Padding for the text content
+                    ) {
+                        // Album Title
+                        Text(
+                            text = album.title,
+                            color = Color.White,
+                            fontSize = 24.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                        Spacer(Modifier.height(4.dp))
 
-                    // Description
-                    Text(
-                        text = album.description,
-                        color = Color.LightGray,
-                        fontSize = 14.sp,
-                        lineHeight = 20.sp
-                    )
+                        // Year and Genre
+                        Text(
+                            text = "${album.year} • ${album.genre}",
+                            color = Color.Gray,
+                            fontSize = 14.sp
+                        )
+                        Spacer(Modifier.height(12.dp))
+
+                        // Description
+                        Text(
+                            text = album.description,
+                            color = Color.LightGray,
+                            fontSize = 14.sp,
+                            lineHeight = 20.sp
+                        )
+                    }
                 }
             }
-        }
 
-        //
-        // "Tracks" Title
-        Text(
-            text = "Tracks",
-            color = Color(0xFFD4AF37), // A gold-like color from your image
-            fontSize = 22.sp,
-            fontWeight = FontWeight.Bold
-        )
+            //
+            // "Tracks" Title
+            Text(
+                text = "Tracks",
+                color = Color(0xFFD4AF37), // A gold-like color from your image
+                fontSize = 22.sp,
+                fontWeight = FontWeight.Bold
+            )
 
-        Spacer(Modifier.height(16.dp))
+            Spacer(Modifier.height(16.dp))
 
-        // LazyColumn for the track list
-        LazyColumn (
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 20.dp)
-        ) {
-            itemsIndexed(album.allTracks) { index, track ->
-                TrackItem(track = track, number = index+1)
+            // LazyColumn for the track list
+//        LazyColumn (
+//            modifier = Modifier
+//                .fillMaxWidth()
+//                .padding(horizontal = 20.dp)
+//        ) {
+//            itemsIndexed(album.allTracks) { index, track ->
+//                TrackItem(track = track, number = index+1)
+//            }
+//        }
+        } else {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                Text("No album details available", color = Color.Gray)
             }
         }
     }
 }
+
 
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
@@ -186,8 +223,9 @@ fun AlbumDetailsPreview(){
                 TrackModel(1, "Last Train Home", "3:07"),
                 TrackModel(1, "Last Train Home", "3:07"),
 
-            ),
+                ),
             artistName = "John Denver"
-        )
+        ),
+        albumDetailsUiState = AlbumDetailsUiState.Success
     )
 }
