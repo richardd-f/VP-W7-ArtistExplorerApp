@@ -115,108 +115,108 @@ class MainViewModel @Inject constructor(
     private val _albumDetailsUiState = MutableStateFlow(AlbumDetailsUiState())
     val albumDetailsUiState: StateFlow<AlbumDetailsUiState> = _albumDetailsUiState.asStateFlow()
 
-    init {
-        fetchAlbums()
-    }
+//    init {
+//        fetchAlbums()
+//    }
+//
+//    private fun fetchAlbums() {
+//        viewModelScope.launch {
+//            repository.searchAlbumsByArtist("John Denver")
+//                .collect { result ->
+//                    when (result) {
+//                        is Result.Success -> {
+//                            val dtoList = result.data ?: emptyList()
+//
+//                            // Convert List<AlbumDto> to List<AlbumLocal>
+//                            val localList = dtoList.map { albumDto ->
+//                                AlbumLocal(
+//                                    id = albumDto.albumId?.toIntOrNull() ?: 0,
+//                                    title = albumDto.albumName ?: "Unknown Album",
+//                                    year = albumDto.yearReleased?.toIntOrNull() ?: 0,
+//                                    genre = albumDto.genre ?: "Unknown",
+//                                    artistName = albumDto.artistName ?: "Unknown Artist",
+//                                    description = albumDto.descriptionEN ?: "No description available",
+//                                    imageUrl = albumDto.albumThumbUrl ?: "",
+//                                    allTracks = emptyList() // dont need this for now, it will be used on the album details
+//                                )
+//                            }
+//
+//                            _albumsList.value = localList
+//                        }
+//
+//                        is Result.Error -> {
+//                            println("Error fetching albums: ${result.message}")
+//                            _albumsList.value = emptyList()
+//                        }
+//
+//                        is Result.Loading -> {
+//                            println("Loading albums...")
+//                        }
+//                    }
+//                }
+//        }
+//    }
 
-    private fun fetchAlbums() {
-        viewModelScope.launch {
-            repository.searchAlbumsByArtist("John Denver")
-                .collect { result ->
-                    when (result) {
-                        is Result.Success -> {
-                            val dtoList = result.data ?: emptyList()
 
-                            // Convert List<AlbumDto> to List<AlbumLocal>
-                            val localList = dtoList.map { albumDto ->
-                                AlbumLocal(
-                                    id = albumDto.albumId?.toIntOrNull() ?: 0,
-                                    title = albumDto.albumName ?: "Unknown Album",
-                                    year = albumDto.yearReleased?.toIntOrNull() ?: 0,
-                                    genre = albumDto.genre ?: "Unknown",
-                                    artistName = albumDto.artistName ?: "Unknown Artist",
-                                    description = albumDto.descriptionEN ?: "No description available",
-                                    imageUrl = albumDto.albumThumbUrl ?: "",
-                                    allTracks = emptyList() // dont need this for now, it will be used on the album details
-                                )
-                            }
-
-                            _albumsList.value = localList
-                        }
-
-                        is Result.Error -> {
-                            println("Error fetching albums: ${result.message}")
-                            _albumsList.value = emptyList()
-                        }
-
-                        is Result.Loading -> {
-                            println("Loading albums...")
-                        }
-                    }
-                }
-        }
-    }
-
-
-    fun setAlbum(albumId: Int) {
-        val albumIdStr = albumId.toString()
-
-        val albumDetailsFlow = repository.getAlbumDetails(albumIdStr)
-        val albumTracksFlow = repository.getAlbumTracks(albumIdStr)
-
-        viewModelScope.launch {
-            combine(albumDetailsFlow, albumTracksFlow) { albumResult, trackResult ->
-
-                when {
-                    albumResult is Result.Loading || trackResult is Result.Loading -> {
-                        _albumDetailsUiState.value = AlbumDetailsUiState(isLoading = true)
-                        null
-                    }
-
-                    albumResult is Result.Error -> {
-                        _albumDetailsUiState.value = AlbumDetailsUiState(errorMessage = albumResult.message)
-                        null
-                    }
-
-                    trackResult is Result.Error -> {
-                        _albumDetailsUiState.value = AlbumDetailsUiState(errorMessage = trackResult.message)
-                        null
-                    }
-
-                    albumResult is Result.Success && trackResult is Result.Success -> {
-                        val albumDto = albumResult.data
-                        val trackDtoList = trackResult.data
-
-                        val trackModels = (trackDtoList ?: emptyList()).mapIndexed { index, trackDto ->
-                            TrackModel(
-                                id = index + 1,
-                                name = trackDto.trackName,
-                                duration = trackDto.trackNumber ?: "-"
-                            )
-                        }
-
-                        val albumLocal = AlbumLocal(
-                            id = albumDto?.albumId?.toIntOrNull() ?: 0,
-                            title = albumDto?.albumName ?: "Unknown Album",
-                            year = albumDto?.yearReleased?.toIntOrNull() ?: 0,
-                            genre = albumDto?.genre ?: "Unknown",
-                            artistName = albumDto?.artistName ?: "Unknown Artist",
-                            description = albumDto?.descriptionEN ?: "No description available",
-                            imageUrl = albumDto?.albumThumbUrl ?: "",
-                            allTracks = trackModels
-                        )
-
-                        _albumDetailsUiState.value = AlbumDetailsUiState(album = albumLocal)
-                        albumLocal
-                    }
-
-                    else -> null
-                }
-            }.collect { albumLocal ->
-                if (albumLocal != null) _selectedAlbum.value = albumLocal
-            }
-        }
-    }
+//    fun setAlbum(albumId: Int) {
+//        val albumIdStr = albumId.toString()
+//
+//        val albumDetailsFlow = repository.getAlbumDetails(albumIdStr)
+//        val albumTracksFlow = repository.getAlbumTracks(albumIdStr)
+//
+//        viewModelScope.launch {
+//            combine(albumDetailsFlow, albumTracksFlow) { albumResult, trackResult ->
+//
+//                when {
+//                    albumResult is Result.Loading || trackResult is Result.Loading -> {
+//                        _albumDetailsUiState.value = AlbumDetailsUiState(isLoading = true)
+//                        null
+//                    }
+//
+//                    albumResult is Result.Error -> {
+//                        _albumDetailsUiState.value = AlbumDetailsUiState(errorMessage = albumResult.message)
+//                        null
+//                    }
+//
+//                    trackResult is Result.Error -> {
+//                        _albumDetailsUiState.value = AlbumDetailsUiState(errorMessage = trackResult.message)
+//                        null
+//                    }
+//
+//                    albumResult is Result.Success && trackResult is Result.Success -> {
+//                        val albumDto = albumResult.data
+//                        val trackDtoList = trackResult.data
+//
+//                        val trackModels = (trackDtoList ?: emptyList()).mapIndexed { index, trackDto ->
+//                            TrackModel(
+//                                id = index + 1,
+//                                name = trackDto.trackName,
+//                                duration = trackDto.trackNumber ?: "-"
+//                            )
+//                        }
+//
+//                        val albumLocal = AlbumLocal(
+//                            id = albumDto?.albumId?.toIntOrNull() ?: 0,
+//                            title = albumDto?.albumName ?: "Unknown Album",
+//                            year = albumDto?.yearReleased?.toIntOrNull() ?: 0,
+//                            genre = albumDto?.genre ?: "Unknown",
+//                            artistName = albumDto?.artistName ?: "Unknown Artist",
+//                            description = albumDto?.descriptionEN ?: "No description available",
+//                            imageUrl = albumDto?.albumThumbUrl ?: "",
+//                            allTracks = trackModels
+//                        )
+//
+//                        _albumDetailsUiState.value = AlbumDetailsUiState(album = albumLocal)
+//                        albumLocal
+//                    }
+//
+//                    else -> null
+//                }
+//            }.collect { albumLocal ->
+//                if (albumLocal != null) _selectedAlbum.value = albumLocal
+//            }
+//        }
+//    }
 
 
 }

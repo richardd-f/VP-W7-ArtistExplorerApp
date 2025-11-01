@@ -40,7 +40,6 @@ class AlbumRepositoryImpl @Inject constructor(
             val response = api.getAlbumTracks(albumId)
             emit(Result.Success(response.trackList ?: emptyList()))
         } catch (e: Exception) {
-            // Generic catch for simplicity. Can be broken down like above.
             emit(Result.Error(e.message ?: "An unknown error occurred"))
         }
     }
