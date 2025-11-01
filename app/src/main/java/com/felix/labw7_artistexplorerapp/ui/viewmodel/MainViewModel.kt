@@ -139,7 +139,7 @@ class MainViewModel @Inject constructor(
                             TrackModel(
                                 id = index + 1,
                                 name = trackDto.trackName,
-                                duration = trackDto.trackNumber ?: "-"
+                                duration = formatDuration(trackDto.duration.toString())
                             )
                         }
 
@@ -162,6 +162,13 @@ class MainViewModel @Inject constructor(
         }
     }
 
+    fun formatDuration(durationMs: String?): String {
+        val millis = durationMs?.toLongOrNull() ?: return "-"
+        val totalSeconds = millis / 1000
+        val minutes = totalSeconds / 60
+        val seconds = totalSeconds % 60
+        return String.format("%d:%02d", minutes, seconds)
+    }
 
 
 
