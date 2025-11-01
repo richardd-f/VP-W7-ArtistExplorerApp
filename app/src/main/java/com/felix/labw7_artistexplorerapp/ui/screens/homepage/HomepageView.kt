@@ -81,7 +81,7 @@ fun HomepageContent(
         ){
             Text(
                 modifier = Modifier.padding(bottom = 20.dp),
-                text = "John Mayer",
+                text = "John Denver",
                 color = Color(0xFFA29C95),
                 fontSize = 20.sp
             )
